@@ -1,19 +1,23 @@
 import React, {Component} from "react";
 import axios from 'axios'
+import {API} from "../constants/api";
 
 class Modal extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            address: '',
+            path: '',
             port: ''
         }
     }
 
-    createSite = () => axios.post('/api/new', this.state).then( res => (res.data.status) ?
-        window.location.reload()
-        : alert('Ошибка систем'));
+    createSite = (e) => {
+        e.preventDefault()
+        axios.post(API.api + '/new', this.state).then(res => (res.data && res.data.id) ?
+            window.location.reload()
+            : alert('Ошибка систем'));
+    }
 
 
 
@@ -36,7 +40,7 @@ class Modal extends Component {
                                         <label htmlFor="exampleInputEmail1">Адресс</label>
                                         <input type="email" className="form-control" id="exampleInputEmail1"
                                                placeholder="ex: /home/django/"
-                                               onChange={(val)=> this.setState({address: val.target.value})}/>
+                                               onChange={(val)=> this.setState({path: val.target.value})}/>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="position">Порт</label>
@@ -44,7 +48,7 @@ class Modal extends Component {
                                                placeholder="ex: 8000"
                                                onChange={(val)=> this.setState({port: val.target.value})}/>
                                     </div>
-                                    <button type="submit" className="btn btn-default waves-effect waves-light" onClick={() => this.createSite()}>Создать
+                                    <button type="button" className="btn btn-default waves-effect waves-light" onClick={(e) => this.createSite(e)}>Создать
                                     </button>
                                     <button type="button" className="btn btn-danger waves-effect waves-light m-l-10"
                                             data-dismiss="modal">Отмена

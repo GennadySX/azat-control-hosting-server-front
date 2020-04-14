@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Modal from "../../components/Modal";
 import axios from "axios";
+import {API} from "../../constants/api";
 
 export default class DefaultPage extends Component {
     constructor(props) {
@@ -11,7 +12,17 @@ export default class DefaultPage extends Component {
     }
 
     getData = () => {
-        axios.get('/api/getAll').then(res => (res.data.status) ? this.setState({siteList: res.data}) : null)
+        axios.get(API.api + '/project').then(res => (res.data.status) ? this.setState({siteList: res.data}) : null)
+    }
+
+    removeIt = (e, item) => {
+        e.preventDefault()
+        axios.delete(API.api + '/project', item).then(res => (res.data && res.data.status) ? window.location.reload() : alert('Ошибка систем'))
+    }
+
+    activateControl = (e, item) => {
+        e.preventDefault()
+        axios.put(API.api + '/project', item).then(res => (res.data && res.data.status) ? window.location.reload() : alert('Ошибка систем'))
     }
 
     render() {
@@ -67,36 +78,36 @@ export default class DefaultPage extends Component {
                                                         </td>
                                                         <td>
                                                             {(site.status === '1') ?
-                                                                <a href="#" className={'btn btn-success p-1'}>Активен</a>
-                                                                : <a href="#" className={'btn btn-danger p-1'}>Не активен</a>
+                                                                <a onClick={(e, site) => this.activateControl(e, site)}
+                                                                   href="#"
+                                                                   className={'btn btn-success p-1'}>Активен</a>
+                                                                : <a href="#" className={'btn btn-danger p-1'}>Не
+                                                                    активен</a>
                                                             }
                                                         </td>
 
                                                         <td>
-                                                            <a href="#" className="table-action-btn"><i
+                                                            <a onClick={(e, item) => this.removeIt(e, item)} href="#"
+                                                               className="table-action-btn"><i
                                                                 className="md md-close"></i></a>
                                                         </td>
                                                     </tr>
-                                                ) : null}
+                                                ) :
+                                                    <tr>
+                                                        <td>
+                                                           Нет сайта
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>}
 
-                                                <tr>
-                                                    <td>
-                                                        ais-kstu.ru
-                                                    </td>
-                                                    <td>
-                                                        /var/www/ais
-                                                    </td>
-                                                    <td>
-                                                        8080
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" className={'btn btn-danger p-1'}>Не активен</a>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" className="table-action-btn"><i
-                                                            className="md md-close"></i></a>
-                                                    </td>
-                                                </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
